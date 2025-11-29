@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conference Calendar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html">Deadlines</a>
+            <a href="calendar.html" class="active">Calendar</a>
+        </nav>
+        <button id="theme-toggle" class="theme-toggle">🌙 Dark Mode</button>
+    </header>
+    <main>
+        <div class="calendar-controls">
+            <button id="prev-year" class="theme-toggle">&lt; Prev Year</button>
+            <h2 id="year-label" style="margin: 0;"></h2>
+            <button id="next-year" class="theme-toggle">Next Year &gt;</button>
+        </div>
+        <div id="calendar-grid-container" class="year-grid"></div>
+    </main>
+    <script src="script.js"></script>
+    <script>
+        initTheme();
+        loadData();
+    </script>
+</body>
+</html>

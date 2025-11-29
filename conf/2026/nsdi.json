@@ -1,0 +1,27 @@
+{
+  "title": "NSDI",
+  "year": 2026,
+  "venue": "Renton, WA, USA",
+  "start": "2026-05-04",
+  "end": "2026-05-06",
+  "areas": [
+    "SYS"
+  ],
+  "cfp_link": "https://www.usenix.org/conference/nsdi26/call-for-papers",
+  "deadlines": [
+    {
+      "season": "Spring",
+      "paper_deadline": "2024-04-25 23:59:59",
+      "abstract_deadline": "2024-04-18 23:59:59",
+      "author_notification": null,
+      "timezone": "UTC-7"
+    },
+    {
+      "season": "Fall",
+      "paper_deadline": "2025-09-18 23:59:59",
+      "abstract_deadline": "2025-09-11 23:59:59",
+      "author_notification": null,
+      "timezone": "UTC-7"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "title": "MLSys",
+  "year": 2026,
+  "venue": "Bellevue, WA, USA",
+  "start": "2026-05-17",
+  "end": "2026-05-22",
+  "areas": [
+    "ML", "SYS"
+  ],
+  "cfp_link": "https://mlsys.org/Conferences/2026/CallForPapers",
+  "deadlines": [
+    {
+      "season": null,
+      "paper_deadline": "2025-10-30 20:00:00",
+      "abstract_deadline": "2025-10-30 20:00:00",
+      "author_notification": null,
+      "timezone": "UTC-0"
+    }
+  ]
+}

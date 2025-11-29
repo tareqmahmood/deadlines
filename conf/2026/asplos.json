@@ -1,0 +1,27 @@
+{
+  "title": "ASPLOS",
+  "year": 2026,
+  "venue": "Pittsburgh, PA, USA",
+  "start": "2026-03-22",
+  "end": "2026-03-26",
+  "areas": [
+    "SYS"
+  ],
+  "cfp_link": "https://www.asplos-conference.org/asplos2026/cfp/",
+  "deadlines": [
+    {
+      "season": "Spring",
+      "paper_deadline": "2025-03-12 23:59:59",
+      "abstract_deadline": "2025-03-05 23:59:59",
+      "author_notification": null,
+      "timezone": "UTC-5"
+    },
+    {
+      "season": "Summer",
+      "paper_deadline": "2025-08-20 23:59:59",
+      "abstract_deadline": "2025-08-13 23:59:59",
+      "author_notification": null,
+      "timezone": "UTC-5"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "title": "SOSP",
+  "year": 2026,
+  "venue": "Prague, Czechia",
+  "start": "2026-09-29",
+  "end": "2026-10-02",
+  "areas": [
+    "SYS"
+  ],
+  "cfp_link": "https://sigops.org/s/conferences/sosp/2026/cfp.html",
+  "deadlines": [
+    {
+      "season": null,
+      "paper_deadline": "2026-04-01 23:59:59",
+      "abstract_deadline": "2026-03-26 23:59:59",
+      "author_notification": null,
+      "timezone": "UTC-12"
+    }
+  ]
+}

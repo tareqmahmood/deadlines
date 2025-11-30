@@ -1,0 +1,27 @@
+{
+  "title": "FAST",
+  "year": 2027,
+  "venue": "Renton, WA, USA",
+  "start": "2027-02-23",
+  "end": "2027-02-25",
+  "areas": [
+    "SYS"
+  ],
+  "cfp_link": "https://www.usenix.org/conference/fast27/call-for-papers",
+  "deadlines": [
+    {
+      "season": "Spring",
+      "paper_deadline": "2026-03-17 23:59:59",
+      "abstract_deadline": null,
+      "author_notification": "2026-06-04 00:00:00",
+      "timezone": "UTC-12"
+    },
+    {
+      "season": "Fall",
+      "paper_deadline": "2026-09-15 23:59:59",
+      "abstract_deadline": null,
+      "author_notification": "2026-12-08 00:00:00",
+      "timezone": "UTC-12"
+    }
+  ]
+}

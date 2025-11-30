@@ -126,6 +126,33 @@ main {
     box-shadow: 0 2px 4px rgba(13, 110, 253, 0.25);
 }
 
+/* Global Link Styling */
+main a:not(.conf-title):not(.filter-tag):not(.tag) {
+    color: var(--accent-color);
+    text-decoration: none;
+    position: relative;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+main a:not(.conf-title):not(.filter-tag):not(.tag)::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1.5px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--accent-color);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+}
+
+main a:not(.conf-title):not(.filter-tag):not(.tag):hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
 /* Deadlines List */
 .deadline-card {
     background-color: var(--card-bg);

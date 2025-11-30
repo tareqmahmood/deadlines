@@ -115,6 +115,7 @@ function processDeadlines() {
                     paperDeadline: paperDate,
                     abstractDeadline: abstractDate,
                     timezone: d.timezone,
+                    isEstimated: conf.is_estimated,
                     raw: d
                 });
             });
@@ -242,12 +243,15 @@ function renderDeadlinesPage(readUrl = true) {
 
     displayDeadlines.forEach((d, index) => {
         const card = document.createElement('div');
-        card.className = 'deadline-card';
+        card.className = `deadline-card ${d.isEstimated ? 'estimated' : ''}`;
         
         const seasonStr = d.season ? ` (${d.season})` : '';
         const title = `${d.confTitle} ${d.confYear}${seasonStr}`;
         
-        const tags = d.areas.map(a => `<span class="tag">${a}</span>`).join('');
+        let tags = d.areas.map(a => `<span class="tag">${a}</span>`).join('');
+        if (d.isEstimated) {
+            tags += `<span class="tag estimated">ESTIMATED</span>`;
+        }
         
         const calUrl = createCalendarUrl(
             `${title} Paper Deadline`, 
@@ -256,10 +260,21 @@ function renderDeadlinesPage(readUrl = true) {
             d.venue
         );
 
+        const titleHtml = d.isEstimated 
+            ? `<span class="conf-title">${title}</span>`
+            : `<a href="conference.html?id=${d.confId}" class="conf-title">${title}</a>`;
+
+        const linksHtml = d.isEstimated
+            ? `<span style="font-size: 0.85rem; color: var(--secondary-text);">Links unavailable</span>`
+            : `
+                <a href="${d.cfpLink}" target="_blank" title="Call for Papers">🔗 CFP</a>
+                <a href="${calUrl}" target="_blank" title="Add to Calendar">📅 Add to Cal</a>
+            `;
+
         card.innerHTML = `
             <div class="deadline-left">
                 <div class="deadline-header">
-                    <a href="conference.html?id=${d.confId}" class="conf-title">${title}</a>
+                    ${titleHtml}
                     <div class="conf-tags">${tags}</div>
                 </div>
                 <div class="venue">${d.venue}</div>
@@ -276,10 +291,9 @@ function renderDeadlinesPage(readUrl = true) {
                 </div>
             </div>
             <div class="deadline-right">
-                <div class="timer" id="timer-${index}">Loading...</div>
+                <div class="timer ${d.isEstimated ? 'estimated' : ''}" id="timer-${index}">Loading...</div>
                 <div class="card-links">
-                    <a href="${d.cfpLink}" target="_blank" title="Call for Papers">🔗 CFP</a>
-                    <a href="${calUrl}" target="_blank" title="Add to Calendar">📅 Add to Cal</a>
+                    ${linksHtml}
                 </div>
             </div>
         `;

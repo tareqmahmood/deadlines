@@ -619,3 +619,18 @@ main a:not(.conf-title):not(.filter-tag):not(.tag):hover::after {
     color: var(--text-color);
     text-decoration: underline;
 }
+
+/* Estimated Deadlines */
+.deadline-card.estimated {
+    border: 2px dashed var(--secondary-text);
+    background-color: rgba(0,0,0,0.02);
+}
+
+.tag.estimated {
+    background-color: var(--secondary-text);
+    color: white;
+}
+
+.timer.estimated {
+    color: var(--secondary-text);
+}

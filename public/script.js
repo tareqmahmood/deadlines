@@ -300,6 +300,68 @@ function renderDeadlinesPage(readUrl = true) {
     });
 }
 
+function showEventModal(events) {
+    // Remove existing modal if any
+    const existing = document.getElementById('event-modal');
+    if (existing) existing.remove();
+
+    const uniqueConfs = [];
+    const seen = new Set();
+    events.forEach(e => {
+        if (!seen.has(e.id)) {
+            seen.add(e.id);
+            uniqueConfs.push(e);
+        }
+    });
+
+    if (uniqueConfs.length === 1) {
+        window.location.href = `conference.html?id=${uniqueConfs[0].id}`;
+        return;
+    }
+
+    const modal = document.createElement('div');
+    modal.id = 'event-modal';
+    modal.className = 'modal-overlay open';
+    
+    // Close on click outside
+    modal.onclick = (e) => {
+        if (e.target === modal) modal.remove();
+    };
+
+    const content = document.createElement('div');
+    content.className = 'modal-content';
+    
+    const title = document.createElement('div');
+    title.className = 'modal-title';
+    title.textContent = 'Select Conference';
+    content.appendChild(title);
+
+    const list = document.createElement('div');
+    list.className = 'modal-list';
+    
+    uniqueConfs.forEach(conf => {
+        const fullConf = conferences.find(c => c.id === conf.id);
+        const displayTitle = fullConf ? `${fullConf.title} ${fullConf.year}` : conf.title;
+
+        const item = document.createElement('a');
+        item.className = 'modal-item';
+        item.textContent = displayTitle;
+        item.href = `conference.html?id=${conf.id}`;
+        list.appendChild(item);
+    });
+
+    content.appendChild(list);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'modal-close';
+    closeBtn.textContent = 'Close';
+    closeBtn.onclick = () => modal.remove();
+    content.appendChild(closeBtn);
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+}
+
 function renderCalendarPage() {
     const now = new Date();
     let currentYear = now.getFullYear();
@@ -408,7 +470,7 @@ function renderCalendarPage() {
                     
                     dayEl.appendChild(barsContainer);
                     dayEl.appendChild(tooltip);
-                    dayEl.onclick = () => window.location.href = `conference.html?id=${events[0].id}`;
+                    dayEl.onclick = () => showEventModal(events);
                 }
                 
                 grid.appendChild(dayEl);

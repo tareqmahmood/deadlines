@@ -1,0 +1,41 @@
+{
+  "title": "SIGMOD",
+  "year": 2027,
+  "venue": "Huntington Beach, CA, USA",
+  "start": "2027-06-13",
+  "end": "2027-06-19",
+  "areas": [
+    "DB"
+  ],
+  "cfp_link": "https://2027.sigmod.org/calls_papers_important_dates.shtml",
+  "deadlines": [
+    {
+      "season": "Round 1",
+      "abstract_deadline": "2026-01-10 23:59:59",
+      "paper_deadline": "2026-01-17 23:59:59",
+      "author_notification": "2026-04-19 00:00:00",
+      "timezone": "UTC-12"
+    },
+    {
+      "season": "Round 2",
+      "abstract_deadline": "2026-04-10 23:59:59",
+      "paper_deadline": "2026-04-17 23:59:59",
+      "author_notification": "2026-07-19 00:00:00",
+      "timezone": "UTC-12"
+    },
+    {
+      "season": "Round 3",
+      "abstract_deadline": "2026-07-10 23:59:59",
+      "paper_deadline": "2026-07-17 23:59:59",
+      "author_notification": "2026-10-19 00:00:00",
+      "timezone": "UTC-12"
+    },
+    {
+      "season": "Round 4",
+      "abstract_deadline": "2026-10-10 23:59:59",
+      "paper_deadline": "2026-10-17 23:59:59",
+      "author_notification": "2027-01-19 00:00:00",
+      "timezone": "UTC-12"
+    }
+  ]
+}

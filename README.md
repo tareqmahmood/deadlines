@@ -36,5 +36,5 @@ A simple, minimalistic, mobile-friendly website to track conference deadlines.
 3. Commit and push. The GitHub Action will automatically rebuild the index.
 
 ## Local Development
-1. Run `./build.sh` to generate `conf.json`.
-2. Serve the directory using a local server (e.g., `python3 -m http.server`).
+1. Run `python3 build.py` to generate `public/db.json`
+2. Run `python3 -m http.server -d public` to start the HTTP server.

@@ -10,7 +10,7 @@
   "cfp_link": "https://2026.sigmod.org/calls_sigmod_demos.shtml",
   "deadlines": [
     {
-      "season": "Demo",
+      "season": null,
       "paper_deadline": "2026-01-15 23:59:59",
       "author_notification": "2026-03-06 00:00:00",
       "timezone": "UTC-12"

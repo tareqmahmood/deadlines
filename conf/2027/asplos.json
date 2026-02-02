@@ -1,0 +1,27 @@
+{
+  "title": "ASPLOS",
+  "year": 2027,
+  "venue": "Earth",
+  "start": "2027-03-22",
+  "end": "2027-03-26",
+  "areas": [
+    "SYS"
+  ],
+  "cfp_link": "https://www.asplos-conference.org/call-for-papers-asplos27/",
+  "deadlines": [
+    {
+      "season": "Spring",
+      "abstract_deadline": null,
+      "paper_deadline": "2026-04-15 23:59:59",
+      "author_notification": "2026-07-06 00:00:00",
+      "timezone": "UTC-12"
+    },
+    {
+      "season": "Fall",
+      "abstract_deadline": null,
+      "paper_deadline": "2026-09-09 23:59:59",
+      "author_notification": "2026-12-01 00:00:00",
+      "timezone": "UTC-12"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "title": "SIGMOD-DEMO",
+  "title": "SIGMOD",
   "year": 2026,
   "venue": "Bengaluru, India",
   "start": "2026-05-31",
@@ -7,13 +7,14 @@
   "areas": [
     "DB"
   ],
-  "cfp_link": "https://2026.sigmod.org/calls_sigmod_demos.shtml",
+  "cfp_link": "https://2026.sigmod.org/calls_papers_important_dates.shtml",
   "deadlines": [
     {
-      "season": null,
+      "season": "Demo",
       "paper_deadline": "2026-01-15 23:59:59",
       "author_notification": "2026-03-06 00:00:00",
-      "timezone": "UTC-12"
+      "timezone": "UTC-12",
+      "cfp_link": "https://2026.sigmod.org/calls_sigmod_demos.shtml"
     }
   ]
 }

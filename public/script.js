@@ -103,6 +103,7 @@ function processDeadlines() {
                 
                 const abstractDateStr = d.abstract_deadline ? `${d.abstract_deadline.replace(' ', 'T')}${tz}` : null;
                 const abstractDate = abstractDateStr ? new Date(abstractDateStr) : null;
+                const seasonCfpLink = d.cfp_link || conf.cfp_link || '';
 
                 allDeadlines.push({
                     confTitle: conf.title,
@@ -110,7 +111,7 @@ function processDeadlines() {
                     confId: conf.id,
                     venue: conf.venue,
                     areas: conf.areas,
-                    cfpLink: conf.cfp_link,
+                    cfpLink: seasonCfpLink,
                     season: d.season,
                     paperDeadline: paperDate,
                     abstractDeadline: abstractDate,
@@ -253,10 +254,12 @@ function renderDeadlinesPage(readUrl = true) {
             tags += `<span class="tag estimated">ESTIMATED</span>`;
         }
         
+        const seasonCfpLink = d.cfpLink;
+        const calendarDetails = seasonCfpLink ? `CFP: ${seasonCfpLink}` : `${title} details`;
         const calUrl = createCalendarUrl(
             `${title} Paper Deadline`, 
             d.paperDeadline, 
-            `CFP: ${d.cfpLink}`, 
+            calendarDetails, 
             d.venue
         );
 
@@ -264,10 +267,14 @@ function renderDeadlinesPage(readUrl = true) {
             ? `<span class="conf-title">${title}</span>`
             : `<a href="conference.html?id=${d.confId}" class="conf-title">${title}</a>`;
 
+        const cfpLinkHtml = seasonCfpLink
+            ? `<a href="${seasonCfpLink}" target="_blank" title="Call for Papers">🔗 CFP</a>`
+            : `<span style="font-size: 0.85rem; color: var(--secondary-text);">CFP TBD</span>`;
+
         const linksHtml = d.isEstimated
             ? `<span style="font-size: 0.85rem; color: var(--secondary-text);">Links unavailable</span>`
             : `
-                <a href="${d.cfpLink}" target="_blank" title="Call for Papers">🔗 CFP</a>
+                ${cfpLinkHtml}
                 <a href="${calUrl}" target="_blank" title="Add to Calendar">📅 Add to Cal</a>
             `;
 
@@ -538,9 +545,20 @@ function renderConferencePage() {
             const processed = allDeadlines.find(ad => ad.raw === d && ad.confId === conf.id);
             
             if (!processed) return;
-            
-            const paperCal = createCalendarUrl(`${conf.title} Paper`, processed.paperDeadline, `CFP: ${conf.cfp_link}`, conf.venue);
-            const absCal = processed.abstractDeadline ? createCalendarUrl(`${conf.title} Abstract`, processed.abstractDeadline, `CFP: ${conf.cfp_link}`, conf.venue) : '#';
+
+            const seasonCfpLink = processed.cfpLink || conf.cfp_link || '';
+            const paperCal = createCalendarUrl(
+                `${conf.title} Paper`,
+                processed.paperDeadline,
+                seasonCfpLink ? `CFP: ${seasonCfpLink}` : `${conf.title} details`,
+                conf.venue
+            );
+            const absCal = processed.abstractDeadline ? createCalendarUrl(
+                `${conf.title} Abstract`,
+                processed.abstractDeadline,
+                seasonCfpLink ? `CFP: ${seasonCfpLink}` : `${conf.title} details`,
+                conf.venue
+            ) : '#';
             
             const isPassed = processed.paperDeadline < new Date();
             
@@ -557,6 +575,9 @@ function renderConferencePage() {
                     <p><strong>Abstract Deadline:</strong> ${formatLocalTime(processed.abstractDeadline)}
                        <a href="${absCal}" target="_blank">[Add to Cal]</a>
                     </p>` : ''}
+                    
+                    ${seasonCfpLink ? `
+                    <p><strong>CFP:</strong> <a href="${seasonCfpLink}" target="_blank">${seasonCfpLink}</a></p>` : ''}
                     
                     ${d.author_notification ? `
                     <p><strong>Notification:</strong> ${d.author_notification}</p>` : ''}
@@ -589,7 +610,7 @@ function renderConferencePage() {
                 📅 ${conf.start} to ${conf.end}
             </div>
             <div style="margin-top: 1rem;">
-                <a href="${conf.cfp_link}" target="_blank" class="tag">Website / CFP</a>
+                ${conf.cfp_link ? `<a href="${conf.cfp_link}" target="_blank" class="tag">Website / CFP</a>` : `<span class="tag" style="background: var(--card-bg); color: var(--secondary-text); border: 1px solid var(--border-color);">Website / CFP TBD</span>`}
             </div>
         </div>
         

@@ -1,0 +1,27 @@
+{
+  "title": "EuroSys",
+  "year": 2027,
+  "venue": "Rabat, Morocco",
+  "start": "2027-04-19",
+  "end": "2027-04-24",
+  "areas": [
+    "SYS"
+  ],
+  "cfp_link": "https://2027.eurosys.org/cfp.html",
+  "deadlines": [
+    {
+      "season": "Spring",
+      "abstract_deadline": "2026-05-07 23:59:59",
+      "paper_deadline": "2026-05-14 23:59:59",
+      "author_notification": "2026-08-21 00:00:00",
+      "timezone": "UTC-12"
+    },
+    {
+      "season": "Fall",
+      "abstract_deadline": "2026-09-17 23:59:59",
+      "paper_deadline": "2026-09-24 23:59:59",
+      "author_notification": "2027-01-29 00:00:00",
+      "timezone": "UTC-12"
+    }
+  ]
+}

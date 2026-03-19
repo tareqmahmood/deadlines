@@ -1,7 +1,7 @@
 import json
 import glob
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Data structures
 conferences = []
@@ -108,7 +108,8 @@ conferences.sort(key=lambda x: (-int(x['year']), x['title']))
 
 db = {
     "conferences": conferences,
-    "areas": sorted(list(areas))
+    "areas": sorted(list(areas)),
+    "last_updated": datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
 }
 
 # Write to public/db.json

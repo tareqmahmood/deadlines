@@ -649,3 +649,9 @@ main a:not(.conf-title):not(.filter-tag):not(.tag):hover::after {
 .timer.estimated {
     color: var(--secondary-text);
 }
+
+/* Last Updated */
+.last-updated {
+    font-size: 0.75rem;
+    color: var(--secondary-text);
+}

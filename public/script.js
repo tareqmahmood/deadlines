@@ -4,6 +4,7 @@ let conferences = [];
 let allDeadlines = [];
 let allAreas = [];
 let selectedAreas = new Set();
+let lastUpdated = '';
 
 // Theme handling
 function initTheme() {
@@ -60,7 +61,24 @@ async function loadData() {
 function processData(data) {
     conferences = data.conferences;
     allAreas = data.areas;
+    lastUpdated = data.last_updated || '';
     processDeadlines();
+    renderFooter();
+}
+
+function renderFooter() {
+    const el = document.getElementById('last-updated');
+    if (!el || !lastUpdated) return;
+    const updated = new Date(lastUpdated.replace(' UTC', 'Z'));
+    const diff = Date.now() - updated.getTime();
+    const mins = Math.floor(diff / 60000);
+    const hours = Math.floor(mins / 60);
+    const days = Math.floor(hours / 24);
+    let ago;
+    if (days > 0) ago = `${days}d ago`;
+    else if (hours > 0) ago = `${hours}h ago`;
+    else ago = `${Math.max(1, mins)}m ago`;
+    el.textContent = `Updated ${ago}`;
 }
 
 function renderCurrentPage(isCached) {

@@ -551,12 +551,16 @@ main a:not(.conf-title):not(.filter-tag):not(.tag):hover::after {
         display: none;
     }
 
-    .last-updated {
-        display: none;
-    }
-
     .header-actions {
         gap: 0.5rem;
+    }
+
+    .last-updated-icon {
+        display: block;
+    }
+
+    .last-updated-label {
+        display: none;
     }
 
     main {
@@ -681,4 +685,11 @@ main a:not(.conf-title):not(.filter-tag):not(.tag):hover::after {
 .last-updated {
     font-size: 0.75rem;
     color: var(--secondary-text);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.last-updated-icon {
+    display: block;
 }

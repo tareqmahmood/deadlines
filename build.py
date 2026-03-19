@@ -118,3 +118,37 @@ with open('public/db.json', 'w') as db_file:
     json.dump(db, db_file, separators=(',', ':'))
 
 print(f"Generated public/db.json with {len(conferences)} conferences and {len(areas)} areas.")
+
+# Build HTML pages from templates
+import re
+
+with open('templates/base.html', 'r') as f:
+    base_template = f.read()
+
+active_pages = ['index', 'calendar', 'about']
+
+for template_file in glob.glob('templates/*.html'):
+    name = os.path.basename(template_file)
+    if name == 'base.html':
+        continue
+
+    with open(template_file, 'r') as f:
+        page_source = f.read()
+
+    # Parse frontmatter comments
+    title = re.search(r'<!-- title: (.+?) -->', page_source).group(1)
+    active = re.search(r'<!-- active: (.*?) ?-->', page_source).group(1)
+    content = re.sub(r'<!-- (?:title|active): .*?-->\n?', '', page_source).strip()
+
+    # Build page from base
+    html = base_template.replace('{{TITLE}}', title)
+    html = html.replace('{{CONTENT}}', content)
+    for page_name in active_pages:
+        placeholder = '{{ACTIVE_' + page_name + '}}'
+        html = html.replace(placeholder, 'class="active"' if active == page_name else '')
+
+    output_path = os.path.join('public', name)
+    with open(output_path, 'w') as f:
+        f.write(html)
+
+    print(f"Built {output_path}")

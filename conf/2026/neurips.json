@@ -1,17 +1,19 @@
 {
   "title": "NeurIPS",
-  "year": 2025,
-  "venue": "San Diego, CA, USA",
-  "start": "2025-12-02",
-  "end": "2025-12-07",
-  "areas": ["ML"],
-  "cfp_link": "https://neurips.cc/Conferences/2025/Dates",
+  "year": 2026,
+  "venue": "Sydney, Australia",
+  "start": "2026-12-06",
+  "end": "2026-12-12",
+  "areas": [
+    "ML"
+  ],
+  "cfp_link": "https://neurips.cc/Conferences/2026/CallForPapers",
   "deadlines": [
     {
       "season": null,
-      "abstract_deadline": "2025-05-11 23:59:59",
-      "paper_deadline": "2025-05-15 23:59:59",
-      "author_notification": "2025-09-18 23:59:59",
+      "abstract_deadline": "2026-05-04 23:59:59",
+      "paper_deadline": "2026-05-06 23:59:59",
+      "author_notification": "2026-09-24 23:59:59",
       "timezone": "UTC-12"
     }
   ]

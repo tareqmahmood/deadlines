@@ -88,18 +88,16 @@ nav a.active {
 
 .theme-toggle {
     background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-sm);
+    border: none;
+    color: var(--secondary-text);
+    padding: 0.5rem;
     cursor: pointer;
     font-weight: 500;
     transition: all 0.2s;
 }
 
 .theme-toggle:hover {
-    background-color: var(--bg-color);
-    border-color: var(--secondary-text);
+    color: var(--accent-color);
 }
 
 main {

@@ -59,6 +59,13 @@ nav a {
     font-weight: 600;
     font-size: 0.9rem;
     transition: color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.nav-icon {
+    display: none;
 }
 
 nav a:hover {
@@ -529,17 +536,37 @@ main a:not(.conf-title):not(.filter-tag):not(.tag):hover::after {
 
 @media (max-width: 600px) {
     header {
-        padding: 1rem;
+        padding: 0.5rem 0.75rem;
     }
-    
+
+    nav a {
+        margin-right: 0.75rem;
+    }
+
+    .nav-icon {
+        display: block;
+    }
+
+    .nav-label {
+        display: none;
+    }
+
+    .last-updated {
+        display: none;
+    }
+
+    .header-actions {
+        gap: 0.5rem;
+    }
+
     main {
         padding: 0 1rem;
     }
-    
+
     .timer {
         font-size: 1.8rem;
     }
-    
+
     .detail-header h1 {
         font-size: 1.8rem;
     }

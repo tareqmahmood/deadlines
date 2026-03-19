@@ -11,6 +11,15 @@ A simple, minimalistic, mobile-friendly website to track conference deadlines.
 - **Google Calendar Integration**: Add deadlines to your calendar.
 
 ## How to Add a Conference
+
+### Using Claude Code
+Run the `/cfp` skill in Claude Code:
+```
+/cfp NeurIPS 2027
+```
+It will search the web for the CFP, extract deadlines, show you the result, and save it to the right `conf/` folder after confirmation.
+
+### Manually
 1. Create a new JSON file in `conf/<year>/<conference>.json`.
 2. Use the following structure:
    ```json

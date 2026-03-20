@@ -1,0 +1,20 @@
+{
+  "title": "COLM",
+  "year": 2026,
+  "venue": "San Francisco, CA, USA",
+  "start": "2026-10-06",
+  "end": "2026-10-09",
+  "areas": [
+    "ML"
+  ],
+  "cfp_link": "https://colmweb.org/cfp.html",
+  "deadlines": [
+    {
+      "season": null,
+      "abstract_deadline": "2026-03-26 23:59:59",
+      "paper_deadline": "2026-03-31 23:59:59",
+      "author_notification": "2026-07-08 00:00:00",
+      "timezone": "UTC-12"
+    }
+  ]
+}

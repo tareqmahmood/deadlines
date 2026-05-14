@@ -36,6 +36,8 @@ Search for Call for Papers information for **$ARGUMENTS** and extract it into th
      - `author_notification`: "YYYY-MM-DD HH:MM:SS" or `null`
      - `timezone`: e.g. "UTC-12", "UTC-7", "UTC+0"
 
+   For **VLDB** (monthly PVLDB cycle), use the dedicated `/vldb` skill instead — its schema and DST handling differ.
+
 4. **Show the extracted JSON** to the user and ask for confirmation before saving.
 
 5. **Save** to `conf/{year}/{title_lowercase}.json` (e.g. `conf/2027/eurosys.json`). Create the year directory if needed.

@@ -6,6 +6,9 @@ let allAreas = [];
 let selectedAreas = new Set();
 let lastUpdated = '';
 
+// Per-conference cap on homepage for rolling-deadline venues (e.g. VLDB).
+const MONTHLY_SHOW_COUNT = 2;
+
 // Theme handling
 function initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light';
@@ -135,6 +138,7 @@ function processDeadlines() {
                     abstractDeadline: abstractDate,
                     timezone: d.timezone,
                     isEstimated: conf.is_estimated,
+                    isMonthly: conf.frequency === 'monthly',
                     raw: d
                 });
             });
@@ -159,6 +163,15 @@ function getTimeRemaining(endtime) {
         minutes,
         seconds
     };
+}
+
+// Deterministic per-area color: hash the label to an HSL hue.
+function areaColor(label) {
+    let h = 0;
+    for (let i = 0; i < label.length; i++) {
+        h = (h * 31 + label.charCodeAt(i)) >>> 0;
+    }
+    return `hsl(${h % 360}, 55%, 35%)`;
 }
 
 function formatLocalTime(date) {
@@ -193,6 +206,7 @@ function renderAreaFilter() {
         const tag = document.createElement('div');
         tag.className = 'filter-tag';
         tag.textContent = area;
+        tag.style.setProperty('--area-color', areaColor(area));
         if (selectedAreas.has(area.toLowerCase())) {
             tag.classList.add('active');
         }
@@ -251,7 +265,20 @@ function renderDeadlinesPage(readUrl = true) {
     // Filter past deadlines? Prompt says "next 10 deadlines".
     const now = new Date();
     displayDeadlines = displayDeadlines.filter(d => d.paperDeadline > now);
-    
+
+    // For rolling-deadline venues, only keep the next MONTHLY_SHOW_COUNT entries
+    // per conference so they don't crowd out other deadlines.
+    const monthlyConfIds = new Set(
+        conferences.filter(c => c.frequency === 'monthly').map(c => c.id)
+    );
+    const seenPerConf = new Map();
+    displayDeadlines = displayDeadlines.filter(d => {
+        if (!monthlyConfIds.has(d.confId)) return true;
+        const n = (seenPerConf.get(d.confId) ?? 0) + 1;
+        seenPerConf.set(d.confId, n);
+        return n <= MONTHLY_SHOW_COUNT;
+    });
+
     // Take top 10
     displayDeadlines = displayDeadlines.slice(0, 10);
     
@@ -267,7 +294,10 @@ function renderDeadlinesPage(readUrl = true) {
         const seasonStr = d.season ? ` (${d.season})` : '';
         const title = `${d.confTitle} ${d.confYear}${seasonStr}`;
         
-        let tags = d.areas.map(a => `<span class="tag">${a}</span>`).join('');
+        let tags = d.areas.map(a => `<span class="tag area" style="background-color: ${areaColor(a)}">${a}</span>`).join('');
+        if (d.isMonthly) {
+            tags += `<span class="tag monthly">MONTHLY</span>`;
+        }
         if (d.isEstimated) {
             tags += `<span class="tag estimated">ESTIMATED</span>`;
         }
@@ -314,6 +344,7 @@ function renderDeadlinesPage(readUrl = true) {
                         <span class="date-value">${formatLocalTime(d.paperDeadline)}</span>
                     </div>
                 </div>
+                ${d.isMonthly ? `<div class="monthly-note">Showing the next ${MONTHLY_SHOW_COUNT} of the monthly cycle — see the conference page for all.</div>` : ''}
             </div>
             <div class="deadline-right">
                 <div class="timer ${d.isEstimated ? 'estimated' : ''}" id="timer-${index}">Loading...</div>

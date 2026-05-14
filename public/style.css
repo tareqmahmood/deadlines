@@ -126,26 +126,23 @@ main {
 .filter-tag {
     font-size: 0.8rem;
     background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--area-color, var(--border-color));
     padding: 0.3rem 0.8rem;
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.2s;
-    color: var(--secondary-text);
+    color: var(--area-color, var(--secondary-text));
     font-weight: 500;
 }
 
 .filter-tag:hover {
-    border-color: var(--accent-color);
-    color: var(--accent-color);
     transform: translateY(-1px);
 }
 
 .filter-tag.active {
-    background-color: var(--accent-color);
+    background-color: var(--area-color, var(--accent-color));
     color: white;
-    border-color: var(--accent-color);
-    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.25);
+    border-color: var(--area-color, var(--accent-color));
 }
 
 /* Global Link Styling */
@@ -672,9 +669,20 @@ main a:not(.conf-title):not(.filter-tag):not(.tag):hover::after {
     background-color: rgba(0,0,0,0.02);
 }
 
+.tag.area {
+    color: white;
+}
+
 .tag.estimated {
     background-color: var(--secondary-text);
     color: white;
+}
+
+.monthly-note {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--secondary-text);
+    font-style: italic;
 }
 
 .timer.estimated {

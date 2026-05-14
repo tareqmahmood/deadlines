@@ -1,7 +1,86 @@
 import json
 import glob
 import os
+import calendar
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
+
+# Shorthand → IANA name. Anything not in this map is treated as already-IANA.
+NAMED_TIMEZONES = {
+    'PT': 'America/Los_Angeles',
+    'ET': 'America/New_York',
+    'CT': 'America/Chicago',
+    'MT': 'America/Denver',
+}
+
+
+def shift_months(dt, n):
+    """Return dt advanced by n calendar months, clamping the day to the target
+    month's length (e.g. Jan 31 + 1 month → Feb 28/29)."""
+    total = dt.year * 12 + (dt.month - 1) + n
+    new_year, new_month = total // 12, total % 12 + 1
+    day = min(dt.day, calendar.monthrange(new_year, new_month)[1])
+    return dt.replace(year=new_year, month=new_month, day=day)
+
+
+def expand_monthly(conf):
+    """For frequency:monthly conferences, expand `first_deadline` into 12
+    consecutive monthly entries in `deadlines`. Each field shifts by i months
+    from its own template value, so cross-month offsets (e.g. abstract on the
+    25th of the previous month) are preserved.
+
+    Timezone handling — exactly one of these is required on the template:
+      - `timezone` (e.g. "UTC-8"): fixed offset, applied to all fields and
+        copied through to each expanded entry.
+      - `named_timezone` (e.g. "PT" or "America/Los_Angeles"): each field is
+        resolved at its own local datetime, so paper / abstract / notification
+        on different sides of a DST boundary still produce the correct UTC
+        instant. Output is normalized to `timezone: "UTC+0"` for the parser;
+        `named_timezone` is dropped."""
+    if conf.get('frequency') != 'monthly':
+        return
+    template = conf.pop('first_deadline', None)
+    if not template:
+        return
+
+    named_tz = template.get('named_timezone')
+    fixed_tz = template.get('timezone')
+    if named_tz and fixed_tz:
+        raise ValueError(
+            f"{conf.get('title')} {conf.get('year')}: first_deadline cannot set "
+            f"both 'timezone' and 'named_timezone' — pick one."
+        )
+    if not named_tz and not fixed_tz:
+        raise ValueError(
+            f"{conf.get('title')} {conf.get('year')}: first_deadline needs "
+            f"either 'timezone' or 'named_timezone'."
+        )
+    zone = ZoneInfo(NAMED_TIMEZONES.get(named_tz, named_tz)) if named_tz else None
+
+    deadlines = []
+    for i in range(12):
+        entry = dict(template)
+        entry.pop('named_timezone', None)
+        local_paper = None
+        for date_field in ['paper_deadline', 'abstract_deadline', 'author_notification']:
+            val = template.get(date_field)
+            if not val:
+                continue
+            shifted = shift_months(datetime.strptime(val, '%Y-%m-%d %H:%M:%S'), i)
+            if date_field == 'paper_deadline':
+                local_paper = shifted
+            if zone is not None:
+                utc_dt = shifted.replace(tzinfo=zone).astimezone(timezone.utc).replace(tzinfo=None)
+                entry[date_field] = utc_dt.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                entry[date_field] = shifted.strftime('%Y-%m-%d %H:%M:%S')
+
+        entry['season'] = local_paper.strftime('%B')
+        if zone is not None:
+            entry['timezone'] = 'UTC+0'
+        deadlines.append(entry)
+
+    conf['deadlines'] = deadlines
 
 # Data structures
 conferences = []
@@ -30,7 +109,9 @@ for year in selected_year:
                 conf_data['id'] = f"{conf_data['title'].lower()}-{conf_data['year']}"
                 file_id = os.path.splitext(os.path.basename(conf_file))[0]
                 conf_data['fileId'] = file_id
-                
+
+                expand_monthly(conf_data)
+
                 conferences.append(conf_data)
                 
                 if 'areas' in conf_data:
@@ -53,6 +134,12 @@ if str(prev_year) in all_years:
             try:
                 with open(conf_file, 'r') as conf_fid:
                     estm_data = json.load(conf_fid)
+
+                    # Skip estimation for monthly/rolling venues — those CFPs are
+                    # typically published well in advance, so a synthetic
+                    # +1-year placeholder would be misleading.
+                    if estm_data.get('frequency') == 'monthly':
+                        continue
 
                     # Create estimated entry for max_year
                     estm_data['year'] = max_year

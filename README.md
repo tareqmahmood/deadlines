@@ -44,6 +44,34 @@ It will search the web for the CFP, extract deadlines, show you the result, and 
    ```
 3. Commit and push. The GitHub Action will automatically rebuild the index.
 
+#### Rolling/monthly venues (e.g. VLDB)
+For venues with a deadline every month, set `"frequency": "monthly"` and provide a single template object as `first_deadline` instead of `deadlines`. `build.py` shifts each field by `i` months for `i = 0..11`, so cross-month offsets (e.g. abstract on the 25th of the previous month) are preserved. The homepage shows only the next two so it doesn't crowd out other deadlines.
+
+Use exactly one of these on the template:
+- `"timezone"` — fixed UTC offset (e.g. `"UTC-8"`), applied to every expanded entry. No DST math.
+- `"named_timezone"` — DST-observing zone (e.g. `"PT"`, `"ET"`, `"CT"`, `"MT"`, or full IANA like `"America/Los_Angeles"`). Each field's UTC offset is resolved at its own date, so paper / abstract / notification on different sides of a DST boundary all produce correct UTC instants. Output is normalized to `timezone: "UTC+0"`.
+
+For VLDB specifically, use the [`/vldb`](.claude/skills/vldb/SKILL.md) skill — it knows the Vol-N cycle and the Vol 20+ abstract rule.
+```json
+{
+  "title": "VLDB",
+  "year": 2027,
+  "venue": "Athens, Greece",
+  "start": "2027-08-23",
+  "end": "2027-08-27",
+  "areas": ["DB"],
+  "cfp_link": "https://vldb.org/2027/call-for-research-track.html",
+  "frequency": "monthly",
+  "first_deadline": {
+    "season": "April",
+    "paper_deadline": "2026-04-01 17:00:00",
+    "abstract_deadline": "2026-03-25 17:00:00",
+    "author_notification": "2026-05-15 00:00:00",
+    "named_timezone": "PT"
+  }
+}
+```
+
 ## Local Development
 1. Run `python3 build.py` to generate `public/db.json`
 2. Run `python3 -m http.server -d public` to start the HTTP server.

@@ -1,0 +1,20 @@
+{
+  "title": "OSDI",
+  "year": 2027,
+  "venue": "Baltimore, MD, USA",
+  "start": "2027-07-07",
+  "end": "2027-07-09",
+  "areas": [
+    "SYS"
+  ],
+  "cfp_link": "https://www.usenix.org/conference/osdi27/call-for-papers",
+  "deadlines": [
+    {
+      "season": null,
+      "paper_deadline": "2026-12-08 22:59:00",
+      "abstract_deadline": "2026-12-01 22:59:00",
+      "author_notification": "2027-03-16 00:00:00",
+      "timezone": "UTC-0"
+    }
+  ]
+}

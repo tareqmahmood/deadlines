@@ -1,0 +1,20 @@
+{
+  "title": "CIDR",
+  "year": 2027,
+  "venue": "Amsterdam, The Netherlands",
+  "start": "2027-01-24",
+  "end": "2027-01-27",
+  "areas": [
+    "DB"
+  ],
+  "cfp_link": "https://www.cidrdb.org/cidr2027/cfp.html",
+  "deadlines": [
+    {
+      "season": null,
+      "paper_deadline": "2026-08-04 23:59:59",
+      "abstract_deadline": null,
+      "author_notification": "2026-10-06 00:00:00",
+      "timezone": "UTC-7"
+    }
+  ]
+}

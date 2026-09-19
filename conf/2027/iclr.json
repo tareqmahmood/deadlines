@@ -1,0 +1,20 @@
+{
+  "title": "ICLR",
+  "year": 2027,
+  "venue": "California, USA",
+  "start": "2027-04-26",
+  "end": "2027-04-30",
+  "areas": [
+    "ML"
+  ],
+  "cfp_link": "https://iclr.cc/Conferences/2027/CallForPapers",
+  "deadlines": [
+    {
+      "season": null,
+      "abstract_deadline": "2026-09-18 23:59:59",
+      "paper_deadline": "2026-09-25 23:59:59",
+      "author_notification": "2026-12-16 23:59:59",
+      "timezone": "UTC-12"
+    }
+  ]
+}

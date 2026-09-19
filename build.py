@@ -13,6 +13,47 @@ NAMED_TIMEZONES = {
     'MT': 'America/Denver',
 }
 
+# Venue string → [latitude, longitude]. Used to place pins on the map page.
+# A venue absent here gets no pin (build prints a warning). Add new cities as
+# conferences are added. Keys must match the conference `venue` string exactly.
+VENUE_COORDS = {
+    "Amsterdam, The Netherlands": [52.37, 4.90],
+    "Athens, Greece": [37.98, 23.73],
+    "Baltimore, MD, USA": [39.29, -76.61],
+    "Bellevue, WA, USA": [47.61, -122.20],
+    "Bengaluru, India": [12.97, 77.59],
+    "Boston, MA, USA": [42.36, -71.06],
+    "California, USA": [36.78, -119.42],
+    "Crete, Greece": [35.24, 24.81],
+    "Edinburgh, UK": [55.95, -3.19],
+    "Huntington Beach, CA, USA": [33.66, -117.99],
+    "Pittsburgh, PA, USA": [40.44, -79.99],
+    "Prague, Czechia": [50.08, 14.44],
+    "Providence, RI, USA": [41.82, -71.41],
+    "Rabat, Morocco": [34.02, -6.83],
+    "Renton, WA, USA": [47.48, -122.21],
+    "San Francisco, CA, USA": [37.77, -122.42],
+    "Santa Clara, CA, USA": [37.35, -121.96],
+    "Seattle, WA, USA": [47.61, -122.33],
+    "Seoul, South Korea": [37.57, 126.98],
+    "Shatin, Hong Kong": [22.38, 114.19],
+    "Sydney, Australia": [-33.87, 151.21],
+}
+
+
+def attach_coords(conf):
+    """Attach [lat, lng] `coords` to a conference from its venue string.
+    Warns (and leaves coords absent) for an unmapped venue."""
+    venue = conf.get('venue')
+    if not venue or venue == 'TBD':
+        return
+    coords = VENUE_COORDS.get(venue)
+    if coords is None:
+        print(f"  WARNING: no map coordinates for venue {venue!r} "
+              f"({conf.get('title')} {conf.get('year')}) — add it to VENUE_COORDS")
+        return
+    conf['coords'] = coords
+
 
 def shift_months(dt, n):
     """Return dt advanced by n calendar months, clamping the day to the target
@@ -111,6 +152,7 @@ for year in selected_year:
                 conf_data['fileId'] = file_id
 
                 expand_monthly(conf_data)
+                attach_coords(conf_data)
 
                 conferences.append(conf_data)
                 
@@ -212,7 +254,7 @@ import re
 with open('templates/base.html', 'r') as f:
     base_template = f.read()
 
-active_pages = ['index', 'calendar', 'about']
+active_pages = ['index', 'calendar', 'map', 'about']
 
 for template_file in glob.glob('templates/*.html'):
     name = os.path.basename(template_file)

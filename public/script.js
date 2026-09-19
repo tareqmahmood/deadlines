@@ -88,6 +88,8 @@ function renderCurrentPage(isCached) {
     // Helper to render the correct page based on URL
     if (window.location.pathname.endsWith('calendar.html')) {
         renderCalendarPage();
+    } else if (window.location.pathname.endsWith('map.html')) {
+        renderMapPage();
     } else if (window.location.pathname.endsWith('conference.html')) {
         renderConferencePage();
     } else {
@@ -562,6 +564,107 @@ function renderCalendarPage() {
     };
     
     render();
+}
+
+function renderMapPage() {
+    const land = document.getElementById('world-land');
+    const pinsGroup = document.getElementById('map-pins');
+    const tooltip = document.getElementById('map-tooltip');
+    if (!land || !pinsGroup) return;
+
+    // Equirectangular projection matching the viewBox (0 0 1000 500).
+    const W = 1000, H = 500;
+    const project = (lat, lng) => [
+        (lng + 180) / 360 * W,
+        (90 - lat) / 180 * H,
+    ];
+
+    if (typeof WORLD_MAP_PATH !== 'undefined') {
+        land.setAttribute('d', WORLD_MAP_PATH);
+    }
+
+    const now = new Date();
+
+    // Latest paper deadline per conference (its "last deadline").
+    const lastByConf = new Map();
+    allDeadlines.forEach(d => {
+        const cur = lastByConf.get(d.confId);
+        if (!cur || d.paperDeadline > cur) lastByConf.set(d.confId, d.paperDeadline);
+    });
+
+    // Group conferences that share a location so pins don't stack.
+    const groups = new Map();
+    conferences.forEach(conf => {
+        if (!conf.coords) return;
+        // Only future conferences — skip events that have already ended.
+        if (conf.end) {
+            const endDate = new Date(conf.end);
+            endDate.setHours(23, 59, 59, 999);
+            if (endDate < now) return;
+        }
+        const [lat, lng] = conf.coords;
+        const key = `${lat},${lng}`;
+        if (!groups.has(key)) groups.set(key, { lat, lng, confs: [] });
+        const last = lastByConf.get(conf.id) || (conf.end ? new Date(conf.end) : null);
+        groups.get(key).confs.push({
+            title: conf.title,
+            year: conf.year,
+            id: conf.id,
+            venue: conf.venue,
+            isEstimated: conf.is_estimated,
+            passed: last ? last < now : false,
+        });
+    });
+
+    pinsGroup.innerHTML = '';
+
+    const showTooltip = (group, evt) => {
+        const rect = document.getElementById('map-container').getBoundingClientRect();
+        const lines = group.confs
+            .slice()
+            .sort((a, b) => a.title.localeCompare(b.title))
+            .map(c => {
+                const dot = c.passed ? 'passed' : 'upcoming';
+                return `<div class="map-tt-row"><span class="map-dot ${dot}"></span>${c.title} ${c.year}</div>`;
+            }).join('');
+        tooltip.innerHTML = `<div class="map-tt-venue">${group.confs[0].venue}</div>${lines}`;
+        tooltip.style.display = 'block';
+        let x = evt.clientX - rect.left + 12;
+        let y = evt.clientY - rect.top + 12;
+        // Keep tooltip inside the container.
+        const ttRect = tooltip.getBoundingClientRect();
+        if (x + ttRect.width > rect.width) x = rect.width - ttRect.width - 8;
+        if (y + ttRect.height > rect.height) y = evt.clientY - rect.top - ttRect.height - 12;
+        tooltip.style.left = `${Math.max(4, x)}px`;
+        tooltip.style.top = `${Math.max(4, y)}px`;
+    };
+    const hideTooltip = () => { tooltip.style.display = 'none'; };
+
+    // Slight fan-out for stacked pins at the same coordinate.
+    Array.from(groups.values()).forEach(group => {
+        const [cx, cy] = project(group.lat, group.lng);
+        const anyOpen = group.confs.some(c => !c.passed);
+
+        const pin = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pin.setAttribute('cx', cx);
+        pin.setAttribute('cy', cy);
+        pin.setAttribute('r', 6);
+        pin.setAttribute('class', `map-pin ${anyOpen ? 'upcoming' : 'passed'}`);
+
+        pin.addEventListener('mouseenter', e => showTooltip(group, e));
+        pin.addEventListener('mousemove', e => showTooltip(group, e));
+        pin.addEventListener('mouseleave', hideTooltip);
+        pin.addEventListener('click', () => {
+            const linkable = group.confs.filter(c => !c.isEstimated);
+            if (linkable.length === 1) {
+                window.location.href = `conference.html?id=${linkable[0].id}`;
+            } else if (linkable.length > 1) {
+                showEventModal(linkable.map(c => ({ id: c.id, title: c.title })));
+            }
+        });
+
+        pinsGroup.appendChild(pin);
+    });
 }
 
 function renderConferencePage() {

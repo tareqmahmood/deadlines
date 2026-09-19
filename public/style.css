@@ -701,3 +701,87 @@ main a:not(.conf-title):not(.filter-tag):not(.tag):hover::after {
 .last-updated-icon {
     display: block;
 }
+
+/* ---- Map page ---- */
+.map-legend {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    color: var(--secondary-text);
+    font-size: 0.9rem;
+}
+.map-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.map-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+}
+.map-dot.upcoming { background: var(--conf-color); }
+.map-dot.passed { background: var(--paper-color); }
+
+.map-container {
+    position: relative;
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+#world-map {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.map-ocean { fill: transparent; }
+.map-land {
+    fill: var(--border-color);
+    stroke: var(--secondary-text);
+    stroke-width: 0.3;
+    stroke-opacity: 0.4;
+}
+
+.map-pin {
+    cursor: pointer;
+    stroke: #fff;
+    stroke-width: 1.5;
+    transition: r 0.1s ease;
+}
+[data-theme="dark"] .map-pin { stroke: #1e1e1e; }
+.map-pin.upcoming { fill: var(--conf-color); }
+.map-pin.passed { fill: var(--paper-color); }
+.map-pin:hover { r: 9; }
+
+.map-tooltip {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    padding: 0.5rem 0.7rem;
+    font-size: 0.85rem;
+    max-width: 240px;
+}
+.map-tt-venue {
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--text-color);
+}
+.map-tt-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--secondary-text);
+    line-height: 1.5;
+}

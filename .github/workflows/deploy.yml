@@ -35,6 +35,7 @@ jobs:
           npm install -g terser clean-css-cli html-minifier-terser
           cleancss -o public/style.css public/style.css
           terser public/script.js -o public/script.js --compress --mangle
+          terser public/world-map.js -o public/world-map.js --compress
           for f in public/*.html; do html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o "$f" "$f"; done
 
       - name: Deploy

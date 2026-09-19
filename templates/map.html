@@ -1,0 +1,18 @@
+<!-- title: Conference Map -->
+<!-- active: map -->
+    <main>
+        <div class="map-legend">
+            <span class="map-legend-item"><span class="map-dot upcoming"></span> Deadline open</span>
+            <span class="map-legend-item"><span class="map-dot passed"></span> Deadline passed</span>
+        </div>
+        <div id="map-container" class="map-container">
+            <svg id="world-map" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet"
+                 xmlns="http://www.w3.org/2000/svg">
+                <rect class="map-ocean" x="0" y="0" width="1000" height="500"></rect>
+                <path id="world-land" class="map-land" d=""></path>
+                <g id="map-pins"></g>
+            </svg>
+        </div>
+        <div id="map-tooltip" class="map-tooltip"></div>
+    </main>
+    <script src="world-map.js"></script>

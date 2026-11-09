@@ -1,0 +1,133 @@
+name: Weekly CFP Update
+
+on:
+  schedule:
+    # Every Monday at 08:00 UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-cfps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      # (1) Deterministic, free: which editions are missing? Hand the list to the
+      # agent so it never spends tokens discovering it. No gaps -> whole run exits.
+      - name: Compute candidate conferences
+        id: gaps
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import glob, os, datetime
+          # Calendar-driven, so it rolls over automatically every January with no
+          # manual seeding. While in year Y, ensure editions exist for Y and Y+1.
+          # A conference with an edition in year T-1 should get a T edition (annual
+          # cadence, matching build.py's +1-year estimate). CFP_CURRENT_YEAR
+          # overrides "today" for testing.
+          cur_year = int(os.environ.get('CFP_CURRENT_YEAR') or datetime.date.today().year)
+          def titles(y):
+              return {os.path.splitext(os.path.basename(f))[0]
+                      for f in glob.glob(f'conf/{y}/*.json')}
+          lines = []
+          for T in (cur_year, cur_year + 1):
+              have = titles(T)
+              for t in sorted(titles(T - 1) - have):
+                  if t.lower() != 'vldb':   # monthly; added manually via /vldb
+                      lines.append(f"- {t} {T}")
+          print(f"count={len(lines)}")
+          print("list<<EOF")
+          print("\n".join(lines) if lines else "(none)")
+          print("EOF")
+          PY
+
+      # (2) The ONLY non-deterministic step. The agent just reads CFP pages and
+      # emits raw fields to _extracted.json. It cannot touch conf/ or run anything
+      # — tools are limited to web research + writing that one file.
+      - name: Extract CFP data
+        if: steps.gaps.outputs.count != '0'
+        uses: anthropic/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: >-
+            --model sonnet
+            --max-turns 30
+            --allowedTools WebSearch,WebFetch,Write
+          prompt: |
+            For each conference edition below, find its official Call for Papers and
+            extract the submission deadlines. Work ONLY from this list:
+
+            ${{ steps.gaps.outputs.list }}
+
+            Write your result to a single file `_extracted.json` — a JSON array.
+            Do not write anywhere else, do not run any commands.
+
+            For each conference, append ONE of:
+
+            Found & announced:
+              {"status":"added","data":{
+                "title": "OSDI",               // well-known acronym, correct case
+                "year": 2027,                   // integer
+                "venue": "City, Country",       // or "City, State, USA"; "" if unknown
+                "start": "2027-07-14",          // YYYY-MM-DD or null
+                "end": "2027-07-16",            // YYYY-MM-DD or null
+                "areas": ["SYS"],               // subset of SYS (systems/arch/net),
+                                                //   ML (machine learning/AI), DB (databases)
+                "cfp_link": "https://...",
+                "deadlines": [
+                  {"season": null,              // "Round 1"/"Fall"/... or null if single round
+                   "abstract_deadline": "2026-12-03 23:59:59",  // "YYYY-MM-DD HH:MM:SS" or null
+                   "paper_deadline":    "2026-12-10 23:59:59",
+                   "author_notification":"2027-03-15 23:59:59",
+                   "timezone": "UTC-12"}        // "UTC-12" (AoE), "UTC-7", "UTC+0", ...
+                ]
+              }}
+
+            Not yet announced / unconfirmed:
+              {"status":"skipped","conference":"fast 2027","reason":"CFP not yet announced"}
+
+            RULES:
+            - Keep it tight: ~1 search + 1-2 page fetches per conference.
+            - Only use "added" when the CFP page shows REAL, announced dates. If in
+              doubt, "skipped". Never invent or estimate a date — use null for any
+              single unknown field, and "skipped" when the whole CFP isn't out.
+            - Use the timezone the CFP states (many use AoE = UTC-12).
+
+      # (3) Deterministic: validate against the real schema, write conf/ files,
+      # refuse malformed or duplicate entries. Sets steps.apply.outputs.added.
+      - name: Validate and write conf files
+        id: apply
+        if: steps.gaps.outputs.count != '0'
+        run: python3 .github/scripts/apply_cfp.py
+
+      # (4) Deterministic: the project's own build must pass before we open a PR.
+      - name: Build check
+        if: steps.apply.outputs.added != '0' && steps.apply.outputs.added != ''
+        run: python3 build.py
+
+      - name: Open pull request
+        if: steps.apply.outputs.added != '0' && steps.apply.outputs.added != ''
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: auto/weekly-cfp
+          delete-branch: true
+          title: 'chore: weekly CFP update'
+          commit-message: 'chore: add newly-announced conference CFPs'
+          body: |
+            Automated weekly CFP sweep. The agent extracted deadlines for
+            conferences we track but hadn't added yet; a validator wrote the files
+            and `build.py` passed.
+
+            **Review each deadline against its linked CFP before merging** — the
+            dates and timezones are scraped.
+          add-paths: |
+            conf/**

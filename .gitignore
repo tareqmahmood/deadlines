@@ -2,3 +2,5 @@ public/db.json
 public/*.html
 __pycache__/
 *.pyc
+.env
+_extracted.json

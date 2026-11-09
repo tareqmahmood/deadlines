@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write   # required by claude-code-action (OIDC)
 
 jobs:
   update-cfps:
@@ -57,6 +58,10 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Provide a token so the action skips OIDC / the Claude GitHub App.
+          # Claude only does web research + writes a file here; it needs no
+          # GitHub access, and a later step handles the PR.
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           claude_args: >-
             --model sonnet
             --max-turns 30

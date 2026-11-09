@@ -62,6 +62,9 @@ jobs:
           # Claude only does web research + writes a file here; it needs no
           # GitHub access, and a later step handles the PR.
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # TEMPORARY: surface the real error while debugging. Our prompt/output
+          # contains no secrets. Remove once the run is green.
+          show_full_output: true
           claude_args: >-
             --model sonnet
             --max-turns 30

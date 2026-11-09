@@ -1,9 +1,11 @@
 name: Weekly CFP Update
 
 on:
-  schedule:
-    # Every Monday at 08:00 UTC
-    - cron: '0 8 * * 1'
+  # DISABLED for now: the weekly schedule is commented out so it won't run on
+  # its own (pending Anthropic account credit). Re-enable by uncommenting.
+  # schedule:
+  #   # Every Monday at 08:00 UTC
+  #   - cron: '0 8 * * 1'
   workflow_dispatch: {}
 
 permissions:
